@@ -1,16 +1,29 @@
-import React, { FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
 
 import { Table } from 'react-bootstrap';
 
 import { TableRow } from './TableRow/TableRow';
 
-export const UsersTable: FC = () => {
+import { useAppDispatch } from 'store';
+import { UserEntityType } from 'store/usersSlice/types';
+import { toggleUsersSelect } from 'store/usersSlice/usersSlice';
+import { utcDateToLocal } from 'utils/utcDateToLocal';
+
+type PropsType = {
+  users: UserEntityType[];
+};
+
+export const UsersTable: FC<PropsType> = ({ users }) => {
+  const dispatch = useAppDispatch();
+  const onUsersCheckBoxChange: ChangeEventHandler<HTMLInputElement> = e =>
+    dispatch(toggleUsersSelect(e.target.checked));
+
   return (
-    <Table bordered hover>
+    <Table bordered hover responsive>
       <thead>
         <tr>
           <th>
-            <input type="checkbox" />
+            <input type="checkbox" onChange={onUsersCheckBoxChange} />
           </th>
           <th>#</th>
           <th>name</th>
@@ -21,42 +34,20 @@ export const UsersTable: FC = () => {
         </tr>
       </thead>
       <tbody>
-        <TableRow
-          email="ya@gmail.com"
-          id="5d78sa5f87afd"
-          isSelected
-          logDate="25-2-2011"
-          name="Boris"
-          regDate="87-2-2022"
-          status="active"
-        />
-        <TableRow
-          email="312@gmail.com"
-          id="asdfafd"
-          isSelected={false}
-          logDate="24-2-2011"
-          name="Alesha"
-          regDate="11-2-2097"
-          status="blocked"
-        />
-        <TableRow
-          email="hoho@gmail.com"
-          id="aadffvcv"
-          isSelected
-          logDate="25-2-2011"
-          name="Vadik"
-          regDate="87-2-2022"
-          status="active"
-        />
-        <TableRow
-          email="gadsf@gmail.com"
-          id="qwefasdfaf"
-          isSelected
-          logDate="25-2-2011"
-          name="Galya"
-          regDate="87-2-2022"
-          status="active"
-        />
+        {users.map(user => {
+          return (
+            <TableRow
+              key={user.id}
+              email={user.email}
+              id={user.id}
+              checked={user.selected}
+              logDate={utcDateToLocal(user.logDate)}
+              name={user.name}
+              regDate={utcDateToLocal(user.regDate)}
+              status={user.status}
+            />
+          );
+        })}
       </tbody>
     </Table>
   );

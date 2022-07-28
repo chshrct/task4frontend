@@ -1,7 +1,10 @@
-import React, { FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
+
+import { useAppDispatch } from 'store';
+import { toggleUserSelect } from 'store/usersSlice/usersSlice';
 
 type PropsType = {
-  isSelected: boolean;
+  checked: boolean;
   id: string;
   name: string;
   email: string;
@@ -11,20 +14,31 @@ type PropsType = {
 };
 
 export const TableRow: FC<PropsType> = props => {
-  const { email, id, isSelected, logDate, name, regDate, status } = props;
-  const rowBgColor = isSelected ? { backgroundColor: '#c0c0c0' } : undefined;
+  const { email, id, checked, logDate, name, regDate, status } = props;
+  const rowBgColor = checked ? { backgroundColor: '#c0c0c0' } : undefined;
+
+  const dispatch = useAppDispatch();
+
+  const onCheckBoxChange: ChangeEventHandler<HTMLInputElement> = (): void => {
+    dispatch(toggleUserSelect(id));
+  };
 
   return (
     <tr style={rowBgColor}>
-      <td>
-        <input type="checkbox" checked={isSelected} />
+      <td className="align-middle">
+        <input
+          className=""
+          type="checkbox"
+          checked={checked}
+          onChange={onCheckBoxChange}
+        />
       </td>
-      <td>{id}</td>
-      <td>{name}</td>
-      <td>{email}</td>
-      <td>{regDate}</td>
-      <td>{logDate}</td>
-      <td>{status}</td>
+      <td className="align-middle">{id}</td>
+      <td className="align-middle">{name}</td>
+      <td className="align-middle">{email}</td>
+      <td className="align-middle">{regDate}</td>
+      <td className="align-middle">{logDate}</td>
+      <td className="align-middle">{status}</td>
     </tr>
   );
 };
