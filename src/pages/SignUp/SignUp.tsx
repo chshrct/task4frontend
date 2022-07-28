@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import { Button, Container, Form, Stack } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { useSignUpMutation } from 'api/authApi/authApi';
+import { useSignUpMutation } from 'api/usersApi/usersApi';
 import { AppRoutes } from 'routes';
 
 export const SignUp: FC = () => {
@@ -15,7 +15,9 @@ export const SignUp: FC = () => {
 
   const navigate = useNavigate();
 
-  if (isSignUpSuccess && signUpData) navigate(AppRoutes.SIGNIN);
+  useEffect(() => {
+    if (isSignUpSuccess && signUpData) navigate(AppRoutes.SIGNIN);
+  }, [isSignUpSuccess]);
 
   const formik = useFormik({
     initialValues: {
@@ -131,6 +133,13 @@ export const SignUp: FC = () => {
           </Button>
         </Stack>
       </Form>
+      <p className="mt-3">
+        If u have an account, u can{' '}
+        <Link className="link-primary" to={AppRoutes.SIGNIN}>
+          Sign In
+        </Link>{' '}
+        here!
+      </p>
     </Container>
   );
 };

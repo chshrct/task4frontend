@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { Button, Container, Form, Stack } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useSignInMutation } from 'api/authApi/authApi';
+import { useSignInMutation } from 'api/usersApi/usersApi';
 import { useAuth } from 'hooks/useAuth';
 import { AppRoutes } from 'routes';
 import { useAppDispatch } from 'store';
@@ -29,7 +29,7 @@ export const SignIn: FC = () => {
       localStorage.setItem('token', token);
       dispatch(setAuthedUser({ id, email }));
     }
-  }, [isLoginSuccess, loginData, navigate]);
+  }, [dispatch, isLoginSuccess, loginData, navigate]);
 
   const formik = useFormik({
     initialValues: {
