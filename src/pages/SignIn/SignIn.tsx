@@ -8,6 +8,7 @@ import { useSignInMutation } from 'api/usersApi/usersApi';
 import { useAuth } from 'hooks/useAuth';
 import { AppRoutes } from 'routes';
 import { useAppDispatch } from 'store';
+import { setError } from 'store/appSlice/appSlice';
 import { setAuthedUser } from 'store/authSlice/authSlice';
 
 export const SignIn: FC = () => {
@@ -15,7 +16,13 @@ export const SignIn: FC = () => {
 
   const [
     signIn,
-    { data: loginData, isSuccess: isLoginSuccess, isLoading: loginIsLoading },
+    {
+      data: signInData,
+      isSuccess: isSignInSuccess,
+      isLoading: isSignInLoading,
+      isError: isSignInError,
+      error: signInError,
+    },
   ] = useSignInMutation();
 
   const dispatch = useAppDispatch();
@@ -23,13 +30,18 @@ export const SignIn: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoginSuccess && loginData) {
-      const { email, id, token } = loginData;
+    // @ts-ignore
+    if (isSignInError) dispatch(setError(signInError.data.name));
+  }, [dispatch, isSignInError, signInError]);
+
+  useEffect(() => {
+    if (isSignInSuccess && signInData) {
+      const { email, id, token } = signInData;
 
       localStorage.setItem('token', token);
       dispatch(setAuthedUser({ id, email }));
     }
-  }, [dispatch, isLoginSuccess, loginData, navigate]);
+  }, [dispatch, isSignInSuccess, signInData, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -57,7 +69,7 @@ export const SignIn: FC = () => {
   const isSubmitDisabled =
     !!formik.errors.email ||
     !!formik.errors.password ||
-    loginIsLoading ||
+    isSignInLoading ||
     !formik.values.email ||
     !formik.values.password;
 
@@ -70,7 +82,7 @@ export const SignIn: FC = () => {
               <Form.Control
                 type="email"
                 placeholder="name@example.com"
-                disabled={loginIsLoading}
+                disabled={isSignInLoading}
                 {...formik.getFieldProps('email')}
               />
               <div style={{ height: '20px' }}>
@@ -83,7 +95,7 @@ export const SignIn: FC = () => {
               <Form.Control
                 type="password"
                 placeholder="*********"
-                disabled={loginIsLoading}
+                disabled={isSignInLoading}
                 {...formik.getFieldProps('password')}
               />
               <div style={{ height: '20px' }}>

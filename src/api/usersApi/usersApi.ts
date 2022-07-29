@@ -6,13 +6,16 @@ import {
   SignInResponseType,
   SignUpQueryType,
   SignUpResponseType,
+  StatusType,
   UserType,
 } from './types';
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
-  tagTypes: ['SIGNUP', 'SIGNIN'],
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
+  tagTypes: ['USERS'],
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://itransition-task4-back.herokuapp.com/',
+  }),
   endpoints: builder => ({
     authCheck: builder.query<AuthCheckResponseType, void>({
       query: () => ({
@@ -28,7 +31,6 @@ export const usersApi = createApi({
         method: 'post',
         body,
       }),
-      invalidatesTags: ['SIGNUP'],
     }),
     signIn: builder.mutation<SignInResponseType, SignInQueryType>({
       query: body => ({
@@ -36,7 +38,7 @@ export const usersApi = createApi({
         method: 'post',
         body,
       }),
-      invalidatesTags: ['SIGNIN'],
+      invalidatesTags: ['USERS'],
     }),
     getUsers: builder.query<UserType[], void>({
       query: () => ({
@@ -45,13 +47,24 @@ export const usersApi = createApi({
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
       }),
-      providesTags: ['SIGNUP', 'SIGNIN'],
+      providesTags: ['USERS'],
     }),
-    deleteUsers: builder.mutation<{ done: true }, string[]>({
+    deleteUsers: builder.mutation<void, string[]>({
       query: users => ({
         url: 'users',
         method: 'delete',
         body: { users },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+        invalidatesTags: ['USERS'],
+      }),
+    }),
+    setUsersBlock: builder.mutation<UserType[], { users: string[]; status: StatusType }>({
+      query: ({ users, status }) => ({
+        url: 'users',
+        method: 'put',
+        body: { users, status },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
@@ -66,4 +79,5 @@ export const {
   useSignUpMutation,
   useAuthCheckQuery,
   useSignInMutation,
+  useSetUsersBlockMutation,
 } = usersApi;

@@ -6,18 +6,32 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useSignUpMutation } from 'api/usersApi/usersApi';
 import { AppRoutes } from 'routes';
+import { useAppDispatch } from 'store';
+import { setError } from 'store/appSlice/appSlice';
 
 export const SignUp: FC = () => {
   const [
     signUp,
-    { data: signUpData, isLoading: signUpIsLoading, isSuccess: isSignUpSuccess },
+    {
+      isLoading: isSignUpLoading,
+      isSuccess: isSignUpSuccess,
+      isError: isSignUpError,
+      error: signUpError,
+    },
   ] = useSignUpMutation();
+
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isSignUpSuccess && signUpData) navigate(AppRoutes.SIGNIN);
-  }, [isSignUpSuccess]);
+    if (isSignUpSuccess) navigate(AppRoutes.SIGNIN);
+  }, [isSignUpSuccess, navigate]);
+
+  useEffect(() => {
+    // @ts-ignore
+    if (isSignUpError) dispatch(setError(signUpError.data.name));
+  }, [dispatch, isSignUpError, signUpError]);
 
   const formik = useFormik({
     initialValues: {
@@ -61,7 +75,7 @@ export const SignUp: FC = () => {
     !formik.values.email ||
     !formik.values.password ||
     !formik.values.cpassword ||
-    signUpIsLoading;
+    isSignUpLoading;
 
   return (
     <Container className="d-flex flex-column justify-content-center align-items-center min-vh-100">
@@ -71,7 +85,7 @@ export const SignUp: FC = () => {
             <Form.Control
               type="name"
               placeholder="Alesha Popovich"
-              disabled={signUpIsLoading}
+              disabled={isSignUpLoading}
               {...formik.getFieldProps('name')}
             />
             <div style={{ height: '20px' }}>
@@ -84,7 +98,7 @@ export const SignUp: FC = () => {
             <Form.Control
               type="email"
               placeholder="exapmle@email.com"
-              disabled={signUpIsLoading}
+              disabled={isSignUpLoading}
               {...formik.getFieldProps('email')}
             />
             <div style={{ height: '20px' }}>
@@ -97,7 +111,7 @@ export const SignUp: FC = () => {
             <Form.Control
               type="password"
               placeholder="123Qeqda6sd9fdsa"
-              disabled={signUpIsLoading}
+              disabled={isSignUpLoading}
               {...formik.getFieldProps('password')}
             />
             <div style={{ height: '20px' }}>
@@ -114,7 +128,7 @@ export const SignUp: FC = () => {
             <Form.Control
               type="password"
               placeholder="123Qeqda6sd9fdsa"
-              disabled={signUpIsLoading}
+              disabled={isSignUpLoading}
               {...formik.getFieldProps('cpassword')}
             />
             <div style={{ height: '20px' }}>

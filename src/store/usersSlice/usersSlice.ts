@@ -24,13 +24,9 @@ export const usersSlice = createSlice({
         user.selected = payload;
       });
     },
-    deleteUsersStore(state, { payload }: PayloadAction<string[]>) {
-      state.users = state.users.filter(user => !payload.includes(user.id));
-    },
   },
 });
 
-export const { setUsers, toggleUserSelect, toggleUsersSelect, deleteUsersStore } =
-  usersSlice.actions;
+export const { setUsers, toggleUserSelect, toggleUsersSelect } = usersSlice.actions;
 
 export const usersReducer = usersSlice.reducer;

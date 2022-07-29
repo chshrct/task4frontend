@@ -1,5 +1,6 @@
 import { ChangeEventHandler, FC } from 'react';
 
+import { StatusType } from 'api/usersApi/types';
 import { useAppDispatch } from 'store';
 import { toggleUserSelect } from 'store/usersSlice/usersSlice';
 
@@ -10,7 +11,7 @@ type PropsType = {
   email: string;
   regDate: string;
   logDate: string;
-  status: 'active' | 'blocked';
+  status: StatusType;
 };
 
 export const TableRow: FC<PropsType> = props => {

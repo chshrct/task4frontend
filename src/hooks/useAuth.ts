@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppRoutes } from 'routes';
 import { useAppSelector } from 'store';
+import { selectIsAuthed } from 'store/authSlice/selectors';
 
 export const useAuth = (currentRoute: any): void => {
-  const isUserAuthed = useAppSelector(state => !!state.auth.id);
+  const isUserAuthed = useAppSelector(selectIsAuthed);
 
   const navigate = useNavigate();
 

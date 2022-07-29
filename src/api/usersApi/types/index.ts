@@ -4,7 +4,7 @@ export type UserType = {
   email: string;
   logDate: string;
   regDate: string;
-  status: 'active' | 'blocked';
+  status: StatusType;
 };
 
 export type SignInResponseType = {
@@ -25,8 +25,8 @@ export type SignUpResponseType = {
 export type SignUpQueryType = SignInQueryType & { name: string };
 
 export type AuthCheckResponseType = {
-  _id: string;
+  id: string;
   email: string;
-  iat: number;
-  exp: number;
 };
+
+export type StatusType = 'active' | 'blocked';
